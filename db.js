@@ -24,7 +24,7 @@ module.exports = () =>{
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);
                 collection.insertOne(item, (err, result)=>{
-                    resolve(results);
+                    resolve(result);
                     client.close();
                 })
                 })
