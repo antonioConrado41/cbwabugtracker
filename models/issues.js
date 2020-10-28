@@ -20,7 +20,7 @@ module.exports = () =>{
            title: title,
            description: description,
            status: status,
-           project_id: new ObjectID(project_id),
+           project_id: (project_id),
            comments:[]
         })
 
