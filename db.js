@@ -24,7 +24,20 @@ module.exports = () =>{
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);
                 collection.insertOne(item, (err, result)=>{
-                    resolve(results);
+                    resolve(result);
+                    client.close();
+                })
+                })
+            })
+    }
+
+    const count = (collectionName) =>{
+        return new Promise((resolve, reject) =>{
+            MongoClient.connect(uri, MONGO_OPTIONS, (err, client) =>{
+                const db = client.db(DB_NAME);
+                const collection = db.collection(collectionName);
+                collection.countDocuments({}, (err, result)=>{
+                    resolve(result);
                     client.close();
                 })
                 })
@@ -33,6 +46,7 @@ module.exports = () =>{
     return {
         get,
         add,
+        count
     }
     
 }

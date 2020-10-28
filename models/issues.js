@@ -1,5 +1,6 @@
 const db = require('../db')();
-const COLLECTION = 'users';
+const ObjectID = require('mongodb').ObjectID;
+const COLLECTION = 'issues';
 
 module.exports = () =>{
 
@@ -12,12 +13,15 @@ module.exports = () =>{
             return oneUser;
     }
         
-    const add = async(name, email, usertype, key) =>{
+    const add = async(slug, title, description, status, project_id) =>{
+        const counter = await db.count(COLLECTION);
         const results = await db.add(COLLECTION, {
-            name: name,
-            email: email,
-            usertype: usertype,
-            key: key,
+           slug: `${slug}-${counter +1}`,
+           title: title,
+           description: description,
+           status: status,
+           project_id: new ObjectID(project_id),
+           comments:[]
         })
 
         return results.result;
