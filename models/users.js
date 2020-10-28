@@ -6,11 +6,11 @@ module.exports = () =>{
     const get = async (email = null) =>{
         if(!email){
             const users = await db.get(COLLECTION);
-            return allUsers;
-        }else{
+            return users;
+        }
             const oneUser = await db.get(COLLECTION, {email});
             return oneUser;
-        } 
+    }
         
     const add = async(name, email, usertype, key) =>{
         const results = await db.add(COLLECTION, {
@@ -27,4 +27,3 @@ module.exports = () =>{
             get,
         }
     }
-}
