@@ -5,8 +5,11 @@ module.exports = () =>{
     const getController = async(req, res) =>{
         res.json(await issues.get());
     }
-    const getBySlug = async(req, res) =>{
+    const getByIssue = async(req, res) =>{
         res.json(await issues.get(req.params.slug));
+    }
+    const getByProject = async(req, res) =>{
+        res.json(await issues.getByProjectId(req.params.slug));
     }
 
     const postController = async(req, res) => {
@@ -22,9 +25,10 @@ module.exports = () =>{
     }
 
     return{
-        getBySlug,
+        getByIssue,
         getController,
         postController,
+        getByProject,
     }
 
 }

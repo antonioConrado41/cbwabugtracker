@@ -4,13 +4,20 @@ const COLLECTION = 'issues';
 
 module.exports = () =>{
 
-    const get = async (email = null) =>{
-        if(!email){
-            const users = await db.get(COLLECTION);
-            return users;
+    const get = async (slug = null) =>{
+        if(!slug){
+            const allIssues = await db.get(COLLECTION);
+            return allIssues;
         }
-            const oneUser = await db.get(COLLECTION, {email});
-            return oneUser;
+            const singleIssue = await db.get(COLLECTION, {slug});
+            return singleIssue;
+    }
+
+    const getByProjectId = async (issueNumber) =>{
+        let expression = new RegExp(issueNumber);
+        const byProject = await db.get(COLLECTION, {slug: expression});
+        return byProject;
+
     }
         
     const add = async(slug, title, description, status, project_id) =>{
@@ -29,6 +36,7 @@ module.exports = () =>{
 
         return {
             get,
-            add
+            add,
+            getByProjectId,
         }
     }
