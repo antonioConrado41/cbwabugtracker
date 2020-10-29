@@ -44,10 +44,26 @@ module.exports = () =>{
                 })
             })
     }
+
+    const update = (collectionName, pipeline ) =>{
+        return new Promise((resolve, reject) =>{
+            MongoClient.connect(uri, MONGO_OPTIONS, (err, client) =>{
+                const db = client.db(DB_NAME);
+                const collection = db.collection(collectionName);
+                collection.updateOne(pipeline[0],pipeline[1], (err, result)=>{
+                    resolve(result);
+                    
+                    client.close();
+                })
+                })
+            })
+    }
+
     return {
         get,
         add,
-        count
+        count,
+        update
     }
     
 }

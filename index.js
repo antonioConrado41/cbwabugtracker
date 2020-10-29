@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const users = require('./controllers/users')();
 const projects = require('./controllers/projects')();
 const issues = require('./controllers/issues')();
+const comments = require('./controllers/comments')();
 
 const port = process.env.PORT || 3000;
 const hostname = '0.0.0.0';
@@ -24,6 +25,8 @@ app.get('/projects/:slug/issues', issues.getByProject);
 app.get('/issues', issues.getController);
 app.get('/issues/:slug', issues.getByIssue);
 app.post('/projects/:slug/issues', issues.postController);
+
+app.post('/issues/:issueNumber/comments', comments.postComment);
 
 app.get('/', (req, res)=>{
     res.send('Hello World');
