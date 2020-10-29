@@ -26,7 +26,10 @@ app.get('/issues', issues.getController);
 app.get('/issues/:slug', issues.getByIssue);
 app.post('/projects/:slug/issues', issues.postController);
 
+app.get('/issues/:issueNumber/comments', comments.getAll);
+app.get('/issues/:issueNumber/comments/:commentId', comments.getComment);
 app.post('/issues/:issueNumber/comments', comments.postComment);
+
 
 app.get('/', (req, res)=>{
     res.send('Hello World');

@@ -4,14 +4,38 @@ const COLLECTION = 'issues';
 
 module.exports = () =>{
 
-    const get = async (email = null) =>{
-        if(!email){
-            const users = await db.get(COLLECTION);
-            return users;
-        }
-            const oneUser = await db.get(COLLECTION, {email});
-            return oneUser;
+    const getCommentsForIssue = async (issueNumber) =>{
+        const PIPELINE =[
+            {$match: {"slug": issueNumber}},
+            {$project:{
+                comments: 1,
+                _id: 0,
+                issueNumber: 1
+            }}
+        ]
+        const getComment = await db.aggregate(COLLECTION , PIPELINE);
+        return getComment;
     }
+
+        const getOneComment = async (commentId) =>{
+            const PIPELINE = [
+                {$match: {'comments._id': ObjectID(commentId)}},
+                {$project:{
+                    comments: {$filter: {
+                        input: '$comments',
+                        as: 'comment',
+                        cond: {$ec: ['$$comment._id', ObjectID(commentId)]}
+                    }},
+                    _id: 0,
+                    issueNumber: 1
+                }}
+            ]
+            const comments = await db.aggregate( COLLECTION , PIPELINE);
+            return comments;
+        
+        }
+    
+    
         
     const addComment = async(issueNumber, text, author) =>{
         const PIPELINE = [{slug : issueNumber}, {$push:{comments: {
@@ -23,10 +47,12 @@ module.exports = () =>{
         const results = await db.update(COLLECTION, PIPELINE);
 
         return results.result;
+    
     }
 
         return {
-            get,
-            addComment
+            getCommentsForIssue,
+            addComment,
+            getOneComment
         }
     }

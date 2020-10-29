@@ -2,11 +2,12 @@ const comments = require('../models/comments')();
 
 module.exports = () =>{
 
-    const getController = async(req, res) =>{
-        res.json(await comments.get());
+    const getAll = async(req, res) =>{
+        res.json(await comments.getCommentsForIssue(req.params.issueNumber))
     }
-    const getByEmail = async(req, res) =>{
-        res.json(await comments.get(req.params.email));
+
+    const getComment = async(req, res)=>{
+        res.json(await comments.getOneComment(req.params.commentId))
     }
 
     const postComment = async(req, res) => {
@@ -19,8 +20,8 @@ module.exports = () =>{
     }
 
     return{
-        getByEmail,
-        getController,
+        getAll,
+        getComment,
         postComment,
     }
 
