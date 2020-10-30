@@ -23,8 +23,22 @@ module.exports = () =>{
         return results.result;
     }
 
+
+    const getByKey = async(key) =>{
+        if(!key){
+            console.log('Missing Key')
+            return null;
+        }
+        const users = await db.get(COLLECTION, {key})
+
+        if(users.length !==1){
+            console.log('bad key')
+        }
+        return users[0];
+    }
         return {
             get,
-            add
+            add,
+            getByKey
         }
     }

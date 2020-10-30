@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const users = require('./controllers/users')();
+const usersModel = require('./models/users')();
 const projects = require('./controllers/projects')();
 const issues = require('./controllers/issues')();
 const comments = require('./controllers/comments')();
@@ -9,6 +10,35 @@ const comments = require('./controllers/comments')();
 const port = process.env.PORT || 3000;
 const hostname = '0.0.0.0';
 const app = (module.exports = express());
+
+app.use(async(req, res, next)=> {
+    const failedAuth = {
+        error: 'Failed',
+        message: 'Not authorized',
+        code: 'xxx'
+    }
+
+    const suppliedKey = req.headers['x-api-key'];
+    const clientIp = req.headers['x-forwarded-for'] || res.connection.remoteAddress;
+
+    if(!suppliedKey){
+        console.log('Failed authentication, no key supplied');
+        new Date();
+        clientIp
+
+        failedAuth.code = '01';
+        return res.status(401).json(failedAuth);
+    }
+
+    const user = await usersModel.getByKey(suppliedKey);
+
+    if(!user){
+        failedAuth.code = '02';
+        return res.status(401).json(failedAuth);
+    }
+
+    next();
+})
 
 app.use(bodyParser.json());
 
@@ -37,4 +67,11 @@ app.get('/', (req, res)=>{
 
 app.listen(port,hostname, ()=>{
     console.log(`App listening at http://${hostname}:${port}`);
+})
+
+app.use((req, res)=>{
+    res.status(404).json({
+        error: 404,
+        message: 'Not found',
+    })
 })

@@ -20,16 +20,16 @@ module.exports = () =>{
         const getOneComment = async (commentId) =>{
             const PIPELINE = [
                 {$match: {'comments._id': ObjectID(commentId)}},
-                {$project:{
-                    comments: {$filter: {
-                        input: '$comments',
-                        as: 'comment',
-                        cond: {$ec: ['$$comment._id', ObjectID(commentId)]}
-                    }},
-                    _id: 0,
-                    issueNumber: 1
-                }}
-            ]
+                {$project: {
+                  comments: {$filter: {
+                    input: '$comments',
+                    as: 'comment',
+                    cond: {$eq: ['$$comment._id', ObjectID(commentId)]}
+                  }},
+                  _id: 0,
+                  issueNumber: 1
+                } }
+              ]
             const comments = await db.aggregate( COLLECTION , PIPELINE);
             return comments;
         
