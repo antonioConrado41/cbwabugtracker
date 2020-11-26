@@ -7,9 +7,18 @@ module.exports = () =>{
     const get = (collectionName, query={}) =>{
         return new Promise((resolve, reject) =>{
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) =>{
+                
+                if(err){
+                    console.log(err);
+                    return reject('.............CONNECTION...FAILED................');
+                }
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);
                 collection.find(query).toArray((err, docs)=> {
+                    if(err){
+                        console.log(err);
+                        return reject('.............NOT...FOUND................');
+                    }
                 resolve(docs);
                 client.close();
 
@@ -21,9 +30,17 @@ module.exports = () =>{
     const add = (collectionName, item ) =>{
         return new Promise((resolve, reject) =>{
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) =>{
+                if(err){
+                    console.log(err);
+                    return reject('.............CONNECTION...FAILED................');
+                }
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);
                 collection.insertOne(item, (err, result)=>{
+                    if(err){
+                        console.log(err);
+                        return reject('.............FAILED..TO..ADD................');
+                    }
                     resolve(result);
                     
                     client.close();
@@ -35,9 +52,17 @@ module.exports = () =>{
     const count = (collectionName) =>{
         return new Promise((resolve, reject) =>{
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) =>{
+                if(err){
+                    console.log(err);
+                    return reject('.............CONNECTION...FAILED................');
+                }
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);
                 collection.countDocuments({}, (err, result)=>{
+                    if(err){
+                        console.log(err);
+                        return reject('.............COUNT...FAILED................');
+                    }
                     resolve(result);
                     client.close();
                 })
@@ -48,9 +73,17 @@ module.exports = () =>{
     const update = (collectionName, pipeline ) =>{
         return new Promise((resolve, reject) =>{
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) =>{
+                if(err){
+                    console.log(err);
+                    return reject('.............CONNECTION...FAILED................');
+                }
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);
                 collection.updateOne(pipeline[0],pipeline[1], (err, result)=>{
+                    if(err){
+                        console.log(err);
+                        return reject('.............UPDATE...FAILED................');
+                    }
                     resolve(result);
                     
                     client.close();
@@ -62,12 +95,17 @@ module.exports = () =>{
     const aggregate = (collectionName, pipeline=[]) =>{
         return new Promise((resolve, reject) =>{
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) =>{
+                if(err){
+                    console.log(err);
+                    return reject('.............CONNECTION...FAILED................');
+                }
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);
                 collection.aggregate(pipeline).toArray((err, docs)=> {
-                if (err){
-                    console.log(err);
-                }
+                    if(err){
+                        console.log(err);
+                        return reject('.............AGGREGATE...FAILED................');
+                    }    
                 resolve(docs);
                 client.close();
 
