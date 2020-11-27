@@ -32,6 +32,11 @@ module.exports = () => {
     }
 
     const add = async (slug, title, description, status, project_id) => {
+        if(!slug || !title || !description || !status || !project_id){
+            return {
+                error: 'Provide all the fields ',
+            }
+        }
         try {
             const counter = await db.count(COLLECTION);
             const results = await db.add(COLLECTION, {

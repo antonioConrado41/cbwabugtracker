@@ -55,6 +55,11 @@ module.exports = () => {
 
 
     const addComment = async (issueNumber, text, author) => {
+        if(!issueNumber || !text || !author){
+            return {
+                error: 'Provide all the fields ',
+            }
+        }
         try {
             const PIPELINE = [{ slug: issueNumber }, {
                 $push: {

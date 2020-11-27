@@ -27,7 +27,21 @@ module.exports = () => {
     }
 
 const add = async (slug, name, description) => {
+    if(!slug || !name || !description){
+        return {
+            error: 'Provide all the fields ',
+        }
+    }
     try {
+        const slugName = await db.get(COLLECTION, {
+            slug: slug,
+        });
+
+        if (slugName.length > 0){
+            return{
+                result: 'Project already exists!',
+            }
+        }
         const results = await db.add(COLLECTION, {
             slug,
             name,

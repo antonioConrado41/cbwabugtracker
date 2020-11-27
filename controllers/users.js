@@ -22,7 +22,7 @@ module.exports = () => {
     }
 
     const postController = async (req, res) => {
-        let { name, email, userType, key } = req.body;
+        let { name, email, usertype, key } = req.body;
         const { results, error } = await users.add(name, email, usertype, key);
         if (error) {
             res.status(500).json({
