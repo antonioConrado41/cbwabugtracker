@@ -1,31 +1,38 @@
 const users = require('../models/users')();
 
-module.exports = () =>{
+module.exports = () => {
 
-    const getController = async(req, res) =>{
-        const {user, error} = await users.get();
-        if(error){
+    const getController = async (req, res) => {
+        const { user, error } = await users.get();
+        if (error) {
             res.status(500).json({
                 error,
             })
         }
         res.json(user);
     }
-    const getByEmail = async(req, res) =>{
-        res.json(await users.get(req.params.email));
+    const getByEmail = async (req, res) => {
+        const { user, error } = await users.get(req.params.email);
+        if (error) {
+            res.status(500).json({
+                error,
+            })
+        }
+        res.json(user);
     }
 
-    const postController = async(req, res) => {
-        let name = req.body.name;
-        let email = req.body.email;
-        let usertype = req.body.usertype;
-        let key = req.body.key;
-
-        const {results} = await users.add(name, email, usertype, key);
+    const postController = async (req, res) => {
+        let { name, email, userType, key } = req.body;
+        const { results, error } = await users.add(name, email, usertype, key);
+        if (error) {
+            res.status(500).json({
+                error,
+            })
+        }
         res.json(results);
     }
 
-    return{
+    return {
         getByEmail,
         getController,
         postController,

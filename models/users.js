@@ -18,6 +18,7 @@ module.exports = () =>{
 }
         
     const add = async(name, email, usertype, key) =>{
+        try{
         const results = await db.add(COLLECTION, {
             name: name,
             email: email,
@@ -26,25 +27,36 @@ module.exports = () =>{
         })
 
         return {results};
+    }catch(err){
+        console.log(err)
+        return {error: err};
     }
+}
+    
 
 
-    const getByKey = async(key) =>{
+    const getByKey = async(email, supliedKey) =>{
+        if(!supliedKey || !email){
+            return { 
+                error: "Missing Key or email! "       
+    }}
         try{
-        if(!key){
-            console.log('Missing Key')
-            return null;
-        }
-        const users = await db.get(COLLECTION, {key})
+        const user = await db.get(COLLECTION, {email: email,
+        })
 
-        if(users.length !==1){
-            console.log('bad key')
+        const verify = bcrypt.compareSync(supliedKey, user[0].key);
+        if(!verify){
+            return {
+                error: "Wrong Password"
+            };
         }
-        return users[0];
+        return user[0];
     }catch(e){
-        return {error: e}
+        return {
+            error: e.message,
     }
     }
+}
         return {
             get,
             add,

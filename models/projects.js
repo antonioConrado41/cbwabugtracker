@@ -1,29 +1,50 @@
 const db = require('../db')();
 const COLLECTION = 'projects';
 
-module.exports = () =>{
-
-    const get = async (slug = null) =>{
-        if(!slug){
-            const allSlug = await db.get(COLLECTION);
-            return allSlug;
+module.exports = () => {
+    const get = async (slug = null) => {
+        if (!slug) {
+            try {
+                const slug = await db.get(COLLECTION);
+                return { slug };
+            } catch (err) {
+                console.log(err)
+                return {
+                    error: err,
+                };
+            }
         }
-            const oneSlug = await db.get(COLLECTION, {slug});
-            return oneSlug;
+
+        try {
+            const slug = await db.get(COLLECTION, {
+                slug: slug,
+            });
+            return { slug };
+        } catch (err) {
+            console.log(err)
+            return { error: err };
+        }
     }
-        
-    const add = async(slug, name, description) =>{
+
+const add = async (slug, name, description) => {
+    try {
         const results = await db.add(COLLECTION, {
-            slug:slug,
-            name: name,
-            description, description,
-        })
-
+            slug,
+            name,
+            description,
+        });
         return results.result;
-    }
-
+    } catch (err) {
+        console.log(err)
         return {
-            get,
-            add,
-        }
+            error: err
+        };
     }
+}
+
+
+return {
+    get,
+    add,
+}
+ }
