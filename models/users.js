@@ -1,5 +1,8 @@
 const db = require('../db')();
 const COLLECTION = 'users';
+const nodemailer = require("nodemailer");
+const senderEmail = process.env.EMAIL;
+const senderPassword = process.env.PASSWORD;
 
 module.exports = () => {
 
@@ -23,7 +26,34 @@ module.exports = () => {
                 error: 'Provide all the fields ',
             }
         }
+
+        let transporter = nodemailer.createTransport({
+            service:'gmail',
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true, // true for 465, false for other ports
+            auth: {
+              user: senderEmail, // generated ethereal user
+              pass: senderPassword, // generated ethereal password
+            },
+            tls:{
+                rejectUnauthorized: false,
+            }
+          });
+        
+          // send mail with defined transport object
+          let info = await transporter.sendMail({
+            from: 'antoniojosea1221@gmail.com', // sender address
+            to: email, // list of receivers
+            subject: "Hello ✔", // Subject line
+            text: "Welcome to BugTracker!", // plain text body
+            html: "<b>Hello world?</b>", // html body
+          });
+        
+          console.log("Message sent: %s", info.messageId);
         try {
+
+            
             const user = await db.get(COLLECTION, { email });
             if (user.length > 0) {
                 return {
